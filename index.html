@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Roasters | Parramatta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #030303;
+            --bg-surface: #0A0A0A;
+            --bg-surface-hover: #121212;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --accent: #E5E5E5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Spatial Grid Background */
+        .bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, var(--border-light) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border-light) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-weight: 500;
+            letter-spacing: -0.03em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(180deg, #FFFFFF 0%, #555555 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(3, 3, 3, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Layout Sections */
+        section {
+            padding: 8rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            align-items: center;
+            text-align: center;
+            padding-top: 5rem; /* Offset nav */
+        }
+
+        #hero h1 {
+            font-size: clamp(4rem, 10vw, 8rem);
+            line-height: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        #hero p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Philosophy / Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .bento-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 3rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .bento-item:hover {
+            background: var(--bg-surface-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .bento-large {
+            grid-column: span 2;
+        }
+
+        /* Menu List */
+        .menu-list {
+            margin-top: 4rem;
+            max-width: 800px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-desc h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .menu-desc p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            max-width: 400px;
+        }
+
+        .menu-price {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Contact & Footer */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+            padding: 1rem 0;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            background: var(--text-primary);
+            color: var(--bg-base);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(0.98);
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 5%;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+            .bento-large {
+                grid-column: span 1;
+            }
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-canvas"></div>
+
+    <nav>
+        <div class="logo">Lumina.</div>
+        <div class="nav-links">
+            <a href="#hero">Home</a>
+            <a href="#philosophy">Philosophy</a>
+            <a href="#menu">Menu</a>
+            <a href="#contact">Location</a>
+        </div>
+    </nav>
+
+    <!-- Section 1: Hero -->
+    <section id="hero">
+        <h1 class="gradient-text reveal">Engineered<br>for Taste.</h1>
+        <p class="reveal delay-1">Precision roasting in Parramatta. A canvas for exceptional coffee, stripped of all distractions.</p>
+        <a href="#philosophy" style="text-decoration: none;">
+            <button class="btn reveal delay-2">Discover</button>
+        </a>
+        <div class="scroll-indicator">Scroll</div>
+    </section>
+
+    <!-- Section 2: Philosophy (Bento Grid) -->
+    <section id="philosophy">
+        <h2 class="gradient-text reveal" style="font-size: 3rem; margin-bottom: 1rem;">The Process.</h2>
+        <p class="reveal delay-1" style="color: var(--text-secondary);">We treat roasting as a science and brewing as an art.</p>
+        
+        <div class="bento-grid">
+            <div class="bento-item bento-large reveal">
+                <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Direct Sourcing</h3>
+                <p style="color: var(--text-secondary);">We bypass the traditional supply chain, partnering directly with operators in Colombia and Ethiopia. This ensures maximum quality control and fair compensation at the farm level.</p>
+            </div>
+            <div class="bento-item reveal delay-1">
+                <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Precision</h3>
+                <p style="color: var(--text-secondary);">Water chemistry, extraction yields, and thermal stability. Every variable is measured.</p>
+            </div>
+            <div class="bento-item reveal">
+                <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">The Space</h3>
+                <p style="color: var(--text-secondary);">Our Parramatta roastery is designed to be a blank canvas. Industrial, minimalist, and focused entirely on the cup.</p>
+            </div>
+            <div class="bento-item bento-large reveal delay-1" style="background: linear-gradient(145deg, #111, #050505); display: flex; align-items: center; justify-content: center; min-height: 250px;">
+                <span style="color: var(--border-light); font-weight: 300; letter-spacing: 4px;">[ ARCHITECTURAL RENDER ]</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Menu -->
+    <section id="menu">
+        <h2 class="gradient-text reveal" style="font-size: 3rem;">Pouring Now.</h2>
+        
+        <div class="menu-list">
+            <div class="menu-item reveal">
+                <div class="menu-desc">
+                    <h3>Filter / Batch Brew</h3>
+                    <p>Washed Colombia. Notes of panela, green apple, and subtle jasmine.</p>
+                </div>
+                <div class="menu-price">$5.00</div>
+            </div>
+            <div class="menu-item reveal delay-1">
+                <div class="menu-desc">
+                    <h3>Black / Espresso</h3>
+                    <p>Double ristretto house blend. Heavy body, dark chocolate, clean finish.</p>
+                </div>
+                <div class="menu-price">$4.50</div>
+            </div>
+            <div class="menu-item reveal delay-2">
+                <div class="menu-desc">
+                    <h3>White / Milk</h3>
+                    <p>Perfectly textured micro-foam over our signature espresso base.</p>
+                </div>
+                <div class="menu-price">$5.50</div>
+            </div>
+            <div class="menu-item reveal">
+                <div class="menu-desc">
+                    <h3>Cascara Immersion</h3>
+                    <p>Brewed coffee cherry husks. Light, refreshing, sweet tobacco notes.</p>
+                </div>
+                <div class="menu-price">$6.00</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Contact & Location -->
+    <section id="contact">
+        <h2 class="gradient-text reveal" style="font-size: 3rem; margin-bottom: 1rem;">Connect.</h2>
+        
+        <div class="contact-wrapper">
+            <div class="reveal">
+                <form onsubmit="event.preventDefault(); alert('Inquiry sent.');">
+                    <div class="input-group">
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <textarea rows="3" placeholder="Inquiry (Wholesale, Events, etc.)" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Inquiry</button>
+                </form>
+            </div>
+            
+            <div class="reveal delay-1" style="display: flex; flex-direction: column; gap: 3rem;">
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">Headquarters & Roastery</h3>
+                    <p style="color: var(--text-secondary);">Unit 4 / Industrial Drive<br>Parramatta, NSW 2150</p>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">Operating Hours</h3>
+                    <p style="color: var(--text-secondary);">Mon - Fri: 6:00am - 3:00pm<br>Saturday: 7:00am - 1:00pm<br>Sunday: Closed</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Lumina Roasters. Designed for the operators.</p>
+    </footer>
+
+    <!-- Intersection Observer for Scroll Animations -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const reveals = document.querySelectorAll(".reveal");
+
+            const revealOptions = {
+                threshold: 0.15, // Triggers when 15% of the element is visible
+                rootMargin: "0px 0px -50px 0px" 
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(
+                entries,
+                revealOnScroll
+            ) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add("active");
+                        // Optional: Stop observing once revealed
+                        revealOnScroll.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+        });
+    </script>
+</body>
+</html>
